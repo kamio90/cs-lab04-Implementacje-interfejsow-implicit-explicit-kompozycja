@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 
 namespace Zadanie1
 {
@@ -42,7 +43,20 @@ namespace Zadanie1
                 _ => throw new FormatException()
             }
             : throw new ApplicationException();
+
+        public void ScanAndPrint(in IDocument document)
+        {
+            if (CanOperate(document, _scanCounter, $"{DateTime.Now} Scan: ${document.GetFileName()}"))
+            {
+                if (CanOperate(document, _printCounter, $" {DateTime.Now} Scan: {document.GetFileName()}"))
+                {
+                 Print(document);
+                 Scan(document);
+                }
+            }
+        }
         
+
         public int PrintCounter
         {
             get => _printCounter;
