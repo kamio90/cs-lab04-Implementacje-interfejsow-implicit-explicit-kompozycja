@@ -14,26 +14,35 @@ namespace Zadanie1
             set => _counter = value;
         }
 
-        public void Print(in IDocument document)
+        private bool CanOperate(in IDocument document, int value, string stringValue)
         {
             switch (state)
             {
                 case IDevice.State.@on:
-                    _printCounter++;
-                    Console.Write($" { DateTime.Now } Scan: { document.GetFileName() } ");
-                    break;
+                    ++value;
+                    Console.Write(stringValue);            
+                    return true;
                 case IDevice.State.off:
-                    break;
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public void Scan(out IDocument document, IDocument.FormatType formatType)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void Print(in IDocument document) =>
+            CanOperate(document, _printCounter, $" {DateTime.Now} Scan: {document.GetFileName()}");
 
+        public void Scan(out IDocument document, IDocument.FormatType formatType) => document != null &&
+            CanOperate(document, _scanCounter, $"{DateTime.Now} Scan: ${document.GetFileName()}")
+            ? document = formatType switch
+            {
+                IDocument.FormatType.TXT => new TextDocument($"TextScan{_scanCounter}.txt"),
+                IDocument.FormatType.PDF => new PDFDocument($"PDFScan{_scanCounter}.pdf"),
+                IDocument.FormatType.JPG => new ImageDocument($"ImageScan{_scanCounter}.pdf"),
+                _ => throw new FormatException()
+            }
+            : throw new ApplicationException();
+        
         public int PrintCounter
         {
             get => _printCounter;
