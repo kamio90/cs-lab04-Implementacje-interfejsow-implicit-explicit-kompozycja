@@ -26,7 +26,8 @@ namespace Zadanie1
                 case IDevice.State.off:
                     return false;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(); //ZW TEL
+                
             }
         }
 
